@@ -1,0 +1,16 @@
+node_modules .env .DS_Store
+4) schema.sql
+Objetivo:
+Definir de forma reproduzível a estrutura do banco de dados necessária para o
+backend — ou seja, criar o banco (opcional) e as tabelas com seus campos, tipos e
+restrições.
+Servir como “contrato” entre o backend e o banco: o backend espera que as tabelas
+e colunas existam exatamente como descritas no schema.sql.
+Por que é importante: porque permite recriar automaticamente a estrutura do
+banco (tabelas, colunas e chaves) de forma consistente, evitando erros de
+configuração e servindo como documentação e base para testes e migrações.
+Conteúdo
+USE projetofinal;
+CREATE TABLE IF NOT EXISTS products ( id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(120) NOT NULL, description VARCHAR(255), price DECIMAL(10,2)
+NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP );
