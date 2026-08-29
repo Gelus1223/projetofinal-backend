@@ -52,7 +52,7 @@ app.post('/api/products', async (req, res) => {
         const insertedId = result.insertId;
 
         const [rows] = await pool.query('SELECT * FROM products WHERE id = ?', [insertedId]);
-        res.status(201).json(rows[0]);
+        res.status(201).json(rows);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Erro ao inserir produto' });
@@ -68,7 +68,7 @@ app.get('/api/products/:id', async (req, res) => {
 
         if (rows.length === 0) return res.status(404).json({ error: 'Produto não encontrado' });
 
-        res.json(rows[0]);
+        res.json(rows);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Erro ao consultar produto' });
