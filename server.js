@@ -24,7 +24,7 @@ async function initDb() {
     });
 }
 
-// Listar todos os produtos
+// LISTAR TODOS OS PRODUTOS
 app.get('/api/products', async (req, res) => {
     try {
         const [rows] = await pool.query(
@@ -32,16 +32,17 @@ app.get('/api/products', async (req, res) => {
         );
 
         res.json(rows);
+
     } catch (err) {
         console.error(err);
+
         res.status(500).json({
             error: 'Erro ao listar produtos'
         });
     }
 });
 
-// Inserir produto
-// body: { name, description, price }
+// INSERIR PRODUTO
 app.post('/api/products', async (req, res) => {
     const { name, description, price } = req.body;
 
@@ -68,13 +69,14 @@ app.post('/api/products', async (req, res) => {
 
     } catch (err) {
         console.error(err);
+
         res.status(500).json({
             error: 'Erro ao inserir produto'
         });
     }
 });
 
-// Consultar produto por ID
+// CONSULTAR PRODUTO POR ID
 app.get('/api/products/:id', async (req, res) => {
     const id = req.params.id;
 
@@ -94,12 +96,14 @@ app.get('/api/products/:id', async (req, res) => {
 
     } catch (err) {
         console.error(err);
+
         res.status(500).json({
             error: 'Erro ao consultar produto'
         });
     }
 });
 
+// INICIAR BANCO E SERVIDOR
 initDb()
     .then(() => {
         app.listen(PORT, () => {
@@ -111,7 +115,7 @@ initDb()
         process.exit(1);
     });
 
-// Handlers para logar erros não tratados
+// TRATAMENTO DE ERROS
 process.on('unhandledRejection', (reason, promise) => {
     console.error(
         'Unhandled Rejection at:',
@@ -121,6 +125,6 @@ process.on('unhandledRejection', (reason, promise) => {
     );
 });
 
-process.on('uncaughtException', err => {
+process.on('uncaughtException', (err) => {
     console.error('Uncaught Exception thrown:', err);
 });
