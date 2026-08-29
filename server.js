@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const mysql = require('mysql2/promise'); // Certifique-se de importar o mysql2
+const mysql = require('mysql2/promise');
 
 const app = express();
 app.use(cors());
@@ -87,7 +87,7 @@ initDb()
     process.exit(1);
   });
 
-// Handlers para logar erros não tratados (útil para debugging)
+// Handlers para logar erros não tratados
 process.on('unhandledRejection', (reason, promise) => {
   console.error('Unhandled Rejection at:', promise, 'reason:', reason);
 });
