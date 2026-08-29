@@ -10,19 +10,16 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 4000;
 
-let pool;
-
-async function initDb() {
-    pool = await mysql.createPool({
-        host: process.env.DB_HOST,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASS,
-        database: process.env.DB_NAME,
-        waitForConnections: true,
-        connectionLimit: 10,
-        queueLimit: 0
-    });
-}
+// Criação do pool de conexões (Gerenciado automaticamente pelo mysql2)
+const pool = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+});
 
 // LISTAR TODOS OS PRODUTOS
 app.get('/api/products', async (req, res) => {
@@ -30,15 +27,10 @@ app.get('/api/products', async (req, res) => {
         const [rows] = await pool.query(
             'SELECT * FROM products ORDER BY id DESC'
         );
-
         res.json(rows);
-
     } catch (err) {
-        console.error(err);
-
-        res.status(500).json({
-            error: 'Erro ao listar produtos'
-        });
+        console.error('Erro ao listar produtos:', err);
+        res.status(500).json({ error: 'Erro ao listar produtos' });
     }
 });
 
@@ -66,13 +58,9 @@ app.post('/api/products', async (req, res) => {
         );
 
         res.status(201).json(rows[0]);
-
     } catch (err) {
-        console.error(err);
-
-        res.status(500).json({
-            error: 'Erro ao inserir produto'
-        });
+        console.error('Erro ao inserir produto:', err);
+        res.status(500).json({ error: 'Erro ao inserir produto' });
     }
 });
 
@@ -93,36 +81,20 @@ app.get('/api/products/:id', async (req, res) => {
         }
 
         res.json(rows[0]);
-
     } catch (err) {
-        console.error(err);
-
-        res.status(500).json({
-            error: 'Erro ao consultar produto'
-        });
+        console.error('Erro ao consultar produto:', err);
+        res.status(500).json({ error: 'Erro ao consultar produto' });
     }
 });
 
-// INICIAR BANCO E SERVIDOR
-initDb()
-    .then(() => {
-        app.listen(PORT, () => {
-            console.log(`API rodando na porta ${PORT}`);
-        });
-    })
-    .catch((err) => {
-        console.error('Erro ao conectar ao banco:', err);
-        process.exit(1);
-    });
+// INICIAR SERVIDOR
+app.listen(PORT, () => {
+    console.log(`API rodando perfeitamente na porta ${PORT}`);
+});
 
-// TRATAMENTO DE ERROS
+// TRATAMENTO DE ERROS GLOBAIS
 process.on('unhandledRejection', (reason, promise) => {
-    console.error(
-        'Unhandled Rejection at:',
-        promise,
-        'reason:',
-        reason
-    );
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
 });
 
 process.on('uncaughtException', (err) => {
